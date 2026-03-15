@@ -42,7 +42,13 @@ st.write(
 api_key = os.getenv("OPENAI_API_KEY")
 
 if not api_key:
-    st.error("OPENAI_API_KEY が設定されていません。.env を確認してください。")
+    try:
+        api_key = st.secrets["OPENAI_API_KEY"]
+    except Exception:
+        api_key = None
+
+if not api_key:
+    st.error("OPENAI_API_KEY が設定されていません。.env または Streamlit Secrets を確認してください。")
     st.stop()
 
 # =========================
@@ -105,7 +111,7 @@ user_text = st.text_area(
 # =========================
 # 実行ボタン
 # =========================
-if st.button("送信"):
+if st.button("送信する"):
     if not user_text.strip():
         st.warning("入力テキストを入力してください。")
     else:
